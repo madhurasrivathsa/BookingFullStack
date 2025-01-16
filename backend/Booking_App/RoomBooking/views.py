@@ -10,14 +10,18 @@ from rest_framework.reverse import reverse
 
 @api_view(['GET'])
 def api_root(request, format=None):
+    print("The request is",request)
     return Response({
-        'rooms': reverse('room-list', request=request, format=format),
+        
+        'rooms': reverse('room-list', request=request, format=format),#generate the URL for a given view name
         
     })
 
 class RoomList(generics.ListCreateAPIView):
     queryset = Room.objects.all()
+    print("this is the queryset",queryset)
     serializer_class = RoomSerializer
+    print("the serializer class is ",serializer_class)
     
     
 
