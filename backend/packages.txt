@@ -1,0 +1,40 @@
+
+py -m  venv env -- command to create a virtual environment
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass  
+.\env\Scripts\activate  
+pip install django
+pip install djangorestframework
+pip install pygments
+django-admin startproject Booking_App
+cd Booking_App
+python manage.py startapp RoomBooking
+INSTALLED_APPS = [
+    'RoomBooking',
+    'rest_framework',]
+python manage.py makemigrations
+python mamage.py migrate
+create a model in models.py 
+in admin.py register the model 
+py manage.py createsuperuser
+madhurabs
+bsmadhurabs@gmail.com
+1234
+py manage.py makemigrations
+py manage.py migrate
+with in RoomBooking create serializer.py (we create a serializer because we need to converts django model data to json format)
+we use HyperlinkedModelSerializer because we get hyperlink insted of primary key when we are referrring to a single product detail
+after our serializer class is ready we need to integrate this in to our views 
+with in views.py use generics from rest_framework   (Generics reduce boilerplate code by providing ready-to-use views for typical tasks like creating, reading, updating, and deleting objects.)
+CreateAPIView: Handles POST requests for creating objects.
+RetrieveAPIView: Handles GET requests for retrieving a single object.
+ListAPIView: Handles GET requests for listing multiple objects.
+UpdateAPIView: Handles PUT and PATCH requests for updating objects.
+DestroyAPIView: Handles DELETE requests for deleting objects.
+GenericAPIView: A base class to customize your views further.
+
+
+
+
+
+
+
