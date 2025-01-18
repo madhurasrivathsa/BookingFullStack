@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.conf import settings 
 
 class Room(models.Model):
     ROOM_TYPES = [
@@ -31,8 +33,15 @@ class RoomImage(models.Model):
     
 class OccupiedDate(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='occupiedDates')
- #   user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='booked_dates')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='booked_dates')
     date = models.DateField()
 
     def __str__(self):
         return f"{self.date} - {self.room.name} "    
+    
+
+
+   
+class User(AbstractUser):
+    email = models.EmailField(unique=True)
+    full_name = models.CharField(max_length=100,default="")
