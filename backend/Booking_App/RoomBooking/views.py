@@ -31,6 +31,11 @@ class OccupiedDatesList(generics.ListCreateAPIView):
     queryset = OccupiedDate.objects.all()
     serializer_class = OccupiedDateSerializer
     #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    def get_queryset(self):
+        user = self.request.user  
+        if not user.is_superuser and not user.is_staff:
+            return OccupiedDate.objects.filter(user=user)
+        return super().get_queryset()
     
     
     
@@ -39,4 +44,3 @@ class OccupiedDatesDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = OccupiedDate.objects.all()
     serializer_class = OccupiedDateSerializer
     #permission_classes = [IsAdminOrReadOnly]    
- 
