@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework import permissions
 from rest_framework.exceptions import AuthenticationFailed,PermissionDenied
+from rest_framework.authtoken.models import Token   
 
 # Create your views here.
 
@@ -72,3 +73,32 @@ class UserDetail(generics.RetrieveAPIView):
             return obj
         else:
             pass#raise permissions.PermissionDenied("You do not have permission to access this user's details.")    
+
+
+class Register(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def perform_create(self, serializer):
+        # Save the user
+        user = serializer.save()
+
+        # Generate token
+        token, created = Token.objects.get_or_create(user=user)
+
+        # Return user data and token in response
+        self.response_data = {
+            "user": {
+                "id": user.id,
+                "username": user.email,
+                "email": user.email,
+                "full_name":user.full_name
+            },
+            "token": token.key,
+        }
+
+    def create(self, request, *args, **kwargs):
+        super().create(request, *args, **kwargs)
+        return Response(self.response_data)
+    
+        
