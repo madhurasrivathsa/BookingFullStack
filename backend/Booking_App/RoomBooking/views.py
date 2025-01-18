@@ -8,6 +8,8 @@ from rest_framework.reverse import reverse
 from rest_framework import permissions
 from rest_framework.exceptions import AuthenticationFailed,PermissionDenied
 from rest_framework.authtoken.models import Token   
+from django.contrib.auth import authenticate
+from rest_framework.views import APIView
 
 # Create your views here.
 
@@ -100,5 +102,36 @@ class Register(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         super().create(request, *args, **kwargs)
         return Response(self.response_data)
+
+
+class Login(APIView):
+    def post(self, request, *args, **kwargs):
+        # Extract username and password from the request data
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        # Authenticate the user
+        user = authenticate(username=username, password=password)
+
+        if user is None:
+            # Raise an error if authentication fails
+            raise AuthenticationFailed('Invalid username or password')
+
+        # Generate or retrieve the token
+        token, created = Token.objects.get_or_create(user=user)
+
+        # Return the user info and token
+        return Response({
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "full_name":user.full_name
+            },
+            "token": token.key,
+        })
     
+class TestToken(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
         
